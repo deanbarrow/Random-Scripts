@@ -45,9 +45,12 @@ foreach ($xml->channel->item as $item) {
 	// If requested page matches a previous post..
 	if ($request == $link){
 
-		// Slug is made up from post title, max 45 chars
-		// I admit this next line is dirty, I had a few bits to remove: ' - ', '(', ')', '.' I could of put this in an array but whatever
-		$slug = substr(strtolower(str_replace("--", "-", str_replace("--", "-", str_replace(" ", "-", str_replace(".", "", str_replace("(", "", str_replace(")", "", $item->title))))))),0, 45);
+		// Slug is made up from post title, max 45 chars (bit hackish)
+		$slug = strtolower($item->title);
+		$slug = str_replace(array('.', ',', '(', ')'), '', $slug);
+		$slug = str_replace(' ', '-', $slug);
+		$slug = str_replace(array('--', '---', '----', '-----'), '-', $slug);
+		$slug = trim(substr($slug, 0, 45));
 		
 	/* I removed this as I originally thought the slug would be the wordpress URL,
 	 * I left it in incase Posterous ever defaulted to the slug instead of title.
@@ -96,4 +99,5 @@ function redirect($url){
 	header ("Location: $url");
 	exit();	
 }
+
 ?>
